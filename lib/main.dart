@@ -6,6 +6,7 @@ import 'package:recover_password/button_pattern.dart';
 import 'package:recover_password/color_outlet.dart';
 import 'package:recover_password/font_family_outlet.dart';
 import 'package:recover_password/size_outlet.dart';
+import 'package:recover_password/snack_bar_messenger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,6 +38,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String tokenController = '';
+
   getPram() {
     var url = window.location.href;
     if (url.contains('=') && url.contains('&')) {
@@ -56,7 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getPram();
+    tokenController = getPram();
   }
 
   @override
@@ -119,7 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: const EdgeInsets.symmetric(horizontal: SizeOutlet.paddingSizeSmall, vertical: SizeOutlet.paddingSizeSmall),
                       margin: const EdgeInsets.symmetric(vertical: SizeOutlet.borderRadiusSizeBig),
                       child: Text(
-                        '${getPram()}',
+                        tokenController,
                         style: const TextStyle(
                           color: ColorOutlet.colorWhite,
                           fontSize: 12,
@@ -132,7 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: ButtonPattern(
                         label: 'Copiar código',
                         onPressed: () {
-                          FlutterClipboard.copy('${getPram()}').then((value) => print('copied'));
+                          FlutterClipboard.copy(tokenController).then((value) => print('copied'));
+                          snackBarMessenger(context: context, message: 'Código copiado com sucesso!');
                         },
                       ),
                     ),
