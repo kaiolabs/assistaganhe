@@ -2,11 +2,11 @@ import 'dart:html';
 
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
-import 'package:recover_password/button_pattern.dart';
-import 'package:recover_password/color_outlet.dart';
-import 'package:recover_password/font_family_outlet.dart';
-import 'package:recover_password/size_outlet.dart';
-import 'package:recover_password/snack_bar_messenger.dart';
+import 'package:recover_password/shared/button_pattern.dart';
+import 'package:recover_password/shared/color_outlet.dart';
+import 'package:recover_password/shared/font_family_outlet.dart';
+import 'package:recover_password/shared/size_outlet.dart';
+import 'package:recover_password/shared/snack_bar_messenger.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,6 +39,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String tokenController = '';
+  bool boasVindas = true;
 
   getPram() {
     var url = window.location.href;
@@ -46,12 +47,15 @@ class _MyHomePageState extends State<MyHomePage> {
       String token = url.split('=')[1].split('&')[0];
       if (token.contains('unauthorized_client')) {
         String token = 'Código inválido ou expirado.';
+        boasVindas = false;
         return token;
       } else {
+        boasVindas = false;
         return token;
       }
     } else {
       String token = 'Nenhum token encontrado.';
+      boasVindas = true;
       return token;
     }
   }
@@ -82,9 +86,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       width: 50,
                       height: 50,
                     ),
-                    const Text(
-                      'Recuperar senha',
-                      style: TextStyle(
+                    Text(
+                      !boasVindas ? 'Recuperar senha' : 'Infinity Studios ∞',
+                      style: const TextStyle(
                         color: ColorOutlet.colorWhite,
                         fontSize: 20,
                         fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
@@ -97,53 +101,70 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: const Text(
-                        'Copie o código abaixo, entre no aplicativo e cole no campo de código de confirmação',
-                        style: TextStyle(
-                          color: ColorOutlet.colorWhite,
-                          fontSize: 14,
-                          fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
+            !boasVindas
+                ? Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.85,
+                            child: const Text(
+                              'Copie o código abaixo, entre no aplicativo e cole no campo de código de confirmação',
+                              style: TextStyle(
+                                color: ColorOutlet.colorWhite,
+                                fontSize: 14,
+                                fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(SizeOutlet.borderRadiusSizeSmall),
+                              border: Border.all(color: ColorOutlet.colorWhite),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: SizeOutlet.paddingSizeSmall, vertical: SizeOutlet.paddingSizeSmall),
+                            margin: const EdgeInsets.symmetric(vertical: SizeOutlet.borderRadiusSizeBig),
+                            child: Text(
+                              tokenController,
+                              style: const TextStyle(
+                                color: ColorOutlet.colorWhite,
+                                fontSize: 12,
+                                fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.85,
+                            child: ButtonPattern(
+                              label: 'Copiar código',
+                              onPressed: () {
+                                FlutterClipboard.copy(tokenController).then((value) => print('copied'));
+                                snackBarMessenger(context: context, message: 'Código copiado com sucesso!');
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                : Expanded(
+                    child: Center(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.85,
+                        child: const Text(
+                          'Seja bem vindo, agora você pode acessar o aplicativo e começar a aproveitar os benefícios de fazer parte da nossa comunidade.',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: ColorOutlet.colorWhite,
+                            fontSize: 14,
+                            fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
+                          ),
                         ),
                       ),
                     ),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(SizeOutlet.borderRadiusSizeSmall),
-                        border: Border.all(color: ColorOutlet.colorWhite),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: SizeOutlet.paddingSizeSmall, vertical: SizeOutlet.paddingSizeSmall),
-                      margin: const EdgeInsets.symmetric(vertical: SizeOutlet.borderRadiusSizeBig),
-                      child: Text(
-                        tokenController,
-                        style: const TextStyle(
-                          color: ColorOutlet.colorWhite,
-                          fontSize: 12,
-                          fontFamily: FontFamilyOutlet.defaultFontFamilyLight,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.85,
-                      child: ButtonPattern(
-                        label: 'Copiar código',
-                        onPressed: () {
-                          FlutterClipboard.copy(tokenController).then((value) => print('copied'));
-                          snackBarMessenger(context: context, message: 'Código copiado com sucesso!');
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
             Padding(
               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.03),
               child: Column(
