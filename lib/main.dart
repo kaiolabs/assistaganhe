@@ -154,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * 0.85,
                         child: const Text(
-                          'Seja bem vindo, agora você pode acessar o aplicativo e começar a aproveitar os benefícios de fazer parte da nossa comunidade.',
+                          'Seja bem-vindo, agora você pode acessar o aplicativo e começar a aproveitar os benefícios de fazer parte da nossa comunidade.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: ColorOutlet.colorWhite,
